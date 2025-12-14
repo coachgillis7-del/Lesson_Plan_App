@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Lesson Plans</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 1rem;
+      background-color: #f5f7fa;
+    }
+    h1 {
+      text-align: center;
+      color: #20407e;
+    }
+    .plan-card {
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .plan-card h2 {
+      margin-top: 0;
+      color: #20407e;
+    }
+    .metadata {
+      font-size: 0.9rem;
+      color: #555;
+      margin-bottom: 0.5rem;
+    }
+    .plan-content {
+      border-top: 1px solid #ddd;
+      margin-top: 0.5rem;
+      padding-top: 0.5rem;
+    }
+    a.back {
+      display: inline-block;
+      margin-bottom: 1rem;
+      color: #087e8b;
+      text-decoration: none;
+    }
+    a.back:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <a href="index.html" class="back">← Back to Lesson Plan Generator</a>
+  <h1>Your Submitted Lesson Plans</h1>
+  <div id="plans-container"></div>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const container = document.getElementById('plans-container');
+      const teacherPlans = JSON.parse(localStorage.getItem('teacherPlans') || '[]');
+      if (teacherPlans.length === 0) {
+        container.innerHTML = '<p>You have not submitted any plans yet.</p>';
+        return;
+      }
+      // Render each plan
+      teacherPlans.forEach((plan, index) => {
+        const card = document.createElement('div');
+        card.className = 'plan-card';
+        const meta = document.createElement('div');
+        meta.className = 'metadata';
+        meta.innerHTML = `<strong>Submitted:</strong> ${new Date(plan.timestamp).toLocaleString()} | <strong>Grade:</strong> ${plan.grade} | <strong>Subject:</strong> ${plan.subject} | <strong>Unit/Lesson:</strong> ${plan.unit}/${plan.lesson}`;
+        const content = document.createElement('div');
+        content.className = 'plan-content';
+        content.innerHTML = plan.html;
+        card.appendChild(meta);
+        card.appendChild(content);
+        container.appendChild(card);
+      });
+    });
+  </script>
+</body>
+</html>

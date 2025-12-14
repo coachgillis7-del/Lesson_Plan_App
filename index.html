@@ -75,7 +75,6 @@
       margin-top: 1.2rem;
     }
     .print-btn {
-      display: none;
       margin-top: 1rem;
       background-color: #087e8b;
     }
@@ -127,7 +126,12 @@
       <button type="submit">Generate Lesson Plan</button>
     </form>
     <div id="plan-output" style="display:none;"></div>
-    <button class="print-btn" id="print-btn" onclick="window.print()">Print/Save Plan</button>
+    <div id="plan-actions" style="display:none; margin-top:1rem;">
+      <button class="print-btn" id="print-btn" onclick="window.print()">Print/Save Plan</button>
+      <button class="print-btn" id="edit-btn" style="background-color:#28a745;">Edit Plan</button>
+      <button class="print-btn" id="add-link-btn" style="background-color:#6f42c1;">Add Link</button>
+      <button class="print-btn" id="submit-btn" style="background-color:#d6336c;">Submit Plan</button>
+    </div>
   </main>
   <script src="script.js"></script>
 </body>

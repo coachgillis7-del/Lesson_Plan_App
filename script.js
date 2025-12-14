@@ -14,6 +14,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('lesson-form');
   const output = document.getElementById('plan-output');
   const printBtn = document.getElementById('print-btn');
+  const editBtn = document.getElementById('edit-btn');
+  const addLinkBtn = document.getElementById('add-link-btn');
+  const submitBtn = document.getElementById('submit-btn');
+  const actionsDiv = document.getElementById('plan-actions');
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -31,7 +35,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const planHtml = generatePlan({ grade, subject, standard, objective, product, program, unit, lesson });
     output.innerHTML = planHtml;
     output.style.display = 'block';
-    printBtn.style.display = 'inline-block';
+    actionsDiv.style.display = 'block';
+    // Disable editing by default
+    output.setAttribute('contenteditable', 'false');
   });
 
   // Automatically set program based on subject
@@ -43,6 +49,64 @@ document.addEventListener('DOMContentLoaded', () => {
       form.program.value = 'Bluebonnet';
     }
   });
+
+  // Edit button toggles contenteditable for the plan output
+  if (editBtn) {
+    editBtn.addEventListener('click', () => {
+      if (!output.innerHTML) return;
+      const current = output.getAttribute('contenteditable');
+      const enable = current !== 'true';
+      output.setAttribute('contenteditable', enable ? 'true' : 'false');
+      editBtn.textContent = enable ? 'Stop Editing' : 'Edit Plan';
+      // When editing is enabled, focus the output area
+      if (enable) {
+        output.focus();
+      }
+    });
+  }
+
+  // Add Link button prompts for URL and applies a hyperlink to the selected text
+  if (addLinkBtn) {
+    addLinkBtn.addEventListener('click', () => {
+      if (!output.innerHTML) return;
+      const url = prompt('Enter the URL to hyperlink:');
+      if (!url) return;
+      // Use document.execCommand to create link on current selection
+      const selection = window.getSelection();
+      if (!selection || selection.isCollapsed) {
+        alert('Please highlight the text you want to hyperlink before clicking Add Link.');
+        return;
+      }
+      document.execCommand('createLink', false, url);
+    });
+  }
+
+  // Submit Plan button saves the current plan to localStorage for teacher and admin hubs
+  if (submitBtn) {
+    submitBtn.addEventListener('click', () => {
+      if (!output.innerHTML) return;
+      // Prepare plan data: include metadata and HTML content
+      const planData = {
+        timestamp: new Date().toISOString(),
+        grade: form.grade.value,
+        subject: form.subject.value,
+        program: form.program.value,
+        unit: form.unit.value,
+        lesson: form.lesson.value,
+        standard: form.standard.value.trim(),
+        html: output.innerHTML,
+      };
+      // Retrieve existing plans or initialize arrays
+      const teacherPlans = JSON.parse(localStorage.getItem('teacherPlans') || '[]');
+      const adminPlans = JSON.parse(localStorage.getItem('adminPlans') || '[]');
+      // Add new plan to both arrays
+      teacherPlans.push(planData);
+      adminPlans.push(planData);
+      localStorage.setItem('teacherPlans', JSON.stringify(teacherPlans));
+      localStorage.setItem('adminPlans', JSON.stringify(adminPlans));
+      alert('Lesson plan submitted successfully. It has been added to your lesson plan page and the administrator hub.');
+    });
+  }
 });
 
 /**
@@ -291,9 +355,9 @@ function generatePlan(data) {
     ${frameSection}
     ${proceduresSection}
     ${differentiationSection}
+    ${internalizationGuide}
     ${reflectionSection}
     ${adminSection}
-    ${internalizationGuide}
   `;
   return fullPlan;
 }
