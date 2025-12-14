@@ -59,73 +59,243 @@ function generatePlan(data) {
   // Determine subject‑specific details
   const subjectDetails = subject === 'Reading' ? getReadingDetails() : getMathDetails();
 
-  // Compose the lesson frame using Fundamental Five
-  const frameSection = `
-    <h2>Lesson Frame</h2>
-    <p><strong>We will...</strong> ${objective || `learn about ${standard}.`}</p>
-    <p><strong>I will...</strong> ${product || `show my understanding by completing the task aligned to our objective.`}</p>
-    <p><em>Framing the Lesson</em>: display the objective and product visibly in the classroom and revisit them at the beginning and end of the lesson. Use kid‑friendly language and ensure the objective is attainable within a single class period.</p>
+  /*
+   * Assemble a comprehensive lesson plan aligned to the TTESS Distinguished
+   * Lesson Plan Template. The output mimics the sections of the template:
+   * Lesson information, objectives and success criteria, formative
+   * assessments, materials, classroom culture (PAX + Fundamental Five),
+   * lesson frame, lesson procedures (with sub‑sections), differentiation,
+   * teacher reflection, administrator look‑fors, and an internalization
+   * guide. When available, the unit and lesson numbers drive the
+   * kid‑friendly objective and product; the optional TEKS concept
+   * supplements descriptions. Teachers can fill in blank areas of the plan.
+   */
+
+  // Format standard display
+  const standardDisplay = standard ? `${standard}` : '';
+  const unitLessonDisplay = unit || lesson ? `${unit || ''}${unit && lesson ? '/' : ''}${lesson || ''}` : '';
+
+  // Build the plan sections
+  // Section 1: Lesson Information
+  const infoSection = `
+    <h2>Section 1 — Lesson Information</h2>
+    <table style="width:100%; border-collapse: collapse;">
+      <tr><td style="font-weight:bold; width:30%;">Teacher</td><td>__________________________</td></tr>
+      <tr><td style="font-weight:bold;">Grade / Subject</td><td>${grade || 'K–2'} ${subject}</td></tr>
+      <tr><td style="font-weight:bold;">Lesson Date</td><td>__________________________</td></tr>
+      <tr><td style="font-weight:bold;">Unit / Lesson #</td><td>${unitLessonDisplay || '___/___'}</td></tr>
+      <tr><td style="font-weight:bold;">TEKS</td><td>${standardDisplay || '__________________________'}</td></tr>
+      <tr><td style="font-weight:bold;">Lesson Duration</td><td>__________________________</td></tr>
+    </table>
   `;
 
-  // Activities and resources section
-  const activitiesSection = `
-    <h2>Activities & Resources</h2>
-    <p>The learning activities should be logically sequenced, connected to prior knowledge, and aligned to the TEKS and lesson objective. Provide appropriate time for student work, reflection, and closure. Integrate technology where it enhances mastery.</p>
-    ${subjectDetails.activities}
-    <p>During each activity, plan opportunities for students to engage in <em>Frequent, Small‑Group, Purposeful Talk (FSGPT)</em>. Every 10–15 minutes of teacher talk, give students 30 seconds to 3 minutes to discuss with partners (groups of 2–4) using pre‑planned seed questions. Circulate in the <em>Power Zone</em>—teaching in close proximity—to monitor and provide feedback.</p>
-  `;
-
-  // PAX Good Behavior Game section
-  const paxSection = `
-    <h2>PAX Good Behavior Game Integration</h2>
-    <p>Use PAX GBG strategies to build self‑regulation and a productive learning environment. Organize students into teams and set clear expectations for on‑task behavior. When teams refrain from disruptive or inattentive behavior, award points or brief rewards. Research shows that PAX reduces classroom disruptions by 50–90% and increases time for teaching and learning【77095242993184†L0-L14】.</p>
+  // Section 2: Objective, Learning Goals, Success Criteria
+  const successCriteria = subject === 'Reading'
+    ? [
+        'Use phonological or phonics skills (e.g., blend and segment sounds, decode high‑frequency words).',
+        'Demonstrate comprehension by answering text‑dependent questions and summarizing key ideas.',
+        'Apply new vocabulary in speaking and writing activities.',
+      ]
+    : [
+        'Demonstrate conceptual understanding by solving problems using appropriate strategies or models.',
+        'Explain mathematical reasoning verbally or in writing.',
+        'Apply new vocabulary and use manipulatives or visuals to justify solutions.',
+      ];
+  const objSection = `
+    <h2>Section 2 — Objective, Learning Goals & Success Criteria</h2>
+    <p><strong>Lesson Objective:</strong> ${objective.replace('We will', 'Students will')} (include decoding, comprehension, vocabulary, skills as appropriate).</p>
+    <p><strong>Student‑Friendly Learning Goal:</strong> "${objective.replace('We will', 'Today I will')}"</p>
+    <p><strong>Success Criteria (Distinguished):</strong></p>
     <ul>
-      <li>Introduce the game’s expectations and model desired behaviors.</li>
-      <li>Explain that teams are “competing” to earn rewards for staying focused and cooperative.</li>
-      <li>Track each team’s behavior and celebrate successes with small rewards or recognition.</li>
-      <li>Use the game daily in short bursts, gradually increasing stamina for focused work.</li>
+      ${successCriteria.map(c => `<li>${c}</li>`).join('')}
     </ul>
   `;
 
-  // Recognition and writing
-  const recognitionWritingSection = `
-    <h2>Recognize, Reinforce & Write</h2>
-    <p>Provide positive, specific recognition for academic and behavioral growth. Acknowledge improvements, not just high grades or perfect behavior. Recognition should be personable and tailored to individual students’ efforts【597725777175985†L199-L218】.</p>
-    <p>Incorporate <em>critical writing</em> to help students organize, clarify, analyze, and connect ideas【597725777175985†L277-L306】. Examples include:</p>
-    <ul>
-      <li>Journaling about what they learned or questions they still have.</li>
-      <li>Creating bubble charts or graphic organizers.</li>
-      <li>Writing sentences or paragraphs explaining their reasoning.</li>
-    </ul>
-  `;
-
-  // Assessment & data section
+  // Section 3: Formative Assessment & Exit Ticket
   const assessmentSection = `
-    <h2>Assessment & Reflection</h2>
-    <p>Use formal and informal assessments to monitor every student’s progress. Share formative and summative data with students so they can engage in self‑assessment and track their own progress, a key component of the T‑TESS distinguished rating【465862501687436†L130-L160】.</p>
-    <p>Suggested assessments:</p>
-    <ul>
-      <li>Exit tickets aligned to the day’s objective.</li>
-      <li>Observations during small‑group discussions.</li>
-      <li>Student self‑reflections or goal‑setting sheets.</li>
-      <li>For math, short quizzes based on Bluebonnet readiness standards; for reading, comprehension checks connected to Amplify story quests.</li>
+    <h2>Section 3 — Formative Assessment & Exit Ticket</h2>
+    <p><strong>Checks for Understanding Throughout Lesson:</strong></p>
+    <ul style="list-style-type:none;">
+      <li><input type="checkbox"/> Whiteboard responses</li>
+      <li><input type="checkbox"/> Turn & Talk</li>
+      <li><input type="checkbox"/> Cold call</li>
+      <li><input type="checkbox"/> Partner reading checks</li>
+      ${subject === 'Reading' ? '<li><input type="checkbox"/> Choral read accuracy</li>' : ''}
+      <li><input type="checkbox"/> Vocabulary application</li>
     </ul>
-    <p>After the lesson, reflect on what worked, what didn’t, and plan next steps. Use student data to adapt instruction and share insights with colleagues as part of continuous improvement.</p>
+    <p><strong>Exit Ticket:</strong> _________________________________________________</p>
   `;
 
-  // Compose the final plan
-  const plan = `
-    <h2>Overview</h2>
-    <p><strong>Grade:</strong> ${grade} | <strong>Subject:</strong> ${subject} | <strong>Program:</strong> ${program} | <strong>Unit/Lesson:</strong> ${unit || '-'} / ${lesson || '-'}${standard ? ` | <strong>Standard/Concept:</strong> ${standard}` : ''}</p>
-    ${frameSection}
-    ${activitiesSection}
-    ${paxSection}
-    ${recognitionWritingSection}
-    ${assessmentSection}
-    <h2>Teacher Internalization</h2>
-    <p>Spend time reviewing the plan before teaching. Anticipate student misconceptions and prepare scaffolds. Consider how each activity supports the objective and the T‑TESS dimensions—planning, instruction, learning environment, and professional practices. Identify opportunities to integrate other disciplines and real‑world connections. Use the reflection prompts to guide a brief internalization session.</p>
+  // Section 4: Materials & Resources
+  const materialsSection = `
+    <h2>Section 4 — Materials & Resources</h2>
+    <ul>
+      <li>${program} Teacher Guide / Slides</li>
+      ${subject === 'Reading' ? '<li>Vocabulary Cards</li><li>Decodables / Knowledge Text</li>' : '<li>Manipulatives / Math Tools</li><li>Eureka Math/Bluebonnet Materials</li>'}
+      <li>Whiteboards / Markers</li>
+      <li>Anchor Charts</li>
+      <li>PAX GBG Team Board</li>
+      <li>Fundamental Five Frame‑the‑Lesson Board</li>
+      <li>Other: _____________________________________</li>
+    </ul>
   `;
-  return plan;
+
+  // Section 5: Classroom Culture (PAX + Fundamental Five)
+  const cultureSection = `
+    <h2>Section 5 — Classroom Culture (PAX + Fundamental Five)</h2>
+    <table style="width:100%; border-collapse: collapse;">
+      <tr><td style="font-weight:bold; width:30%;">PAX Vision for Lesson</td><td>More of: ________ | Less of: ________</td></tr>
+      <tr><td style="font-weight:bold;">PAX Signals & Routines</td><td>Harmonicas, PAX Quiet, PAX Hands/Eyes/Heart</td></tr>
+      <tr><td style="font-weight:bold;">Good Behavior Game Rounds</td><td>
+        <label><input type="checkbox"/> Whole Group Reading / Instruction</label>
+        <label><input type="checkbox"/> Partner Work</label>
+        <label><input type="checkbox"/> Independent Practice</label>
+      </td></tr>
+      <tr><td style="font-weight:bold;">PAX Kernels</td><td>
+        <label><input type="checkbox"/> Tootles</label>
+        <label><input type="checkbox"/> Beat the Timer</label>
+        <label><input type="checkbox"/> Random Sticks</label>
+        <label><input type="checkbox"/> Wacky Prizes</label>
+      </td></tr>
+      <tr><td style="font-weight:bold;">Fundamental Five Elements</td><td>Frame the Lesson, Power Zone, Frequent Talk, Recognize & Reinforce, Critical Writing</td></tr>
+    </table>
+  `;
+
+  // Section 6: Lesson Frame (Fundamental Five)
+  const frameSection = `
+    <h2>Section 6 — Lesson Frame (Fundamental Five)</h2>
+    <table style="width:100%; border-collapse: collapse;">
+      <tr><td style="font-weight:bold; width:30%;">Frame the Lesson (Beginning)</td><td>
+        <p><strong>Today we will...</strong> ${objective.replace('We will', '').trim()}.</p>
+        <p><strong>You will know you are successful when...</strong> ${successCriteria[0]}</p>
+      </td></tr>
+      <tr><td style="font-weight:bold;">Frame the Lesson (End)</td><td>
+        <p>Review the objective and success criteria. Provide a reflective prompt or exit question for students to connect learning back to the goal.</p>
+      </td></tr>
+    </table>
+  `;
+
+  // Section 7: Lesson Procedures (Amplify/Bluebonnet + T‑TESS Distinguished)
+  const proceduresSection = `
+    <h2>Section 7 — Lesson Procedures (${program} + TTESS Distinguished)</h2>
+    <h3>A. Opening Routine (3–5 min)</h3>
+    <ul>
+      <li>PAX Quiet signal and attention getter</li>
+      <li>Review objective and success criteria with students</li>
+      <li>Engage prior knowledge or connection to previous lesson</li>
+    </ul>
+    <h3>B. Vocabulary & Knowledge Building (5–8 min)</h3>
+    <ul>
+      <li>Introduce new vocabulary with student‑friendly definitions</li>
+      <li>Use gestures, images or realia to reinforce understanding</li>
+      <li>Have students Turn & Talk using the vocabulary in context</li>
+      <li>Begin a PAX GBG mini‑round to reinforce focus and cooperation</li>
+    </ul>
+    <h3>C. ${subject === 'Reading' ? 'Read‑Aloud / Decodable Reading' : 'Concept Instruction / Guided Practice'} (10–15 min)</h3>
+    <ul>
+      <li>Teacher modeling of ${subject === 'Reading' ? 'fluency and comprehension strategies' : 'mathematical concept or problem‑solving strategy'}</li>
+      <li>Pose text‑dependent or concept questions to check understanding</li>
+      <li>Incorporate Turn & Talk and other CFUs (Cold call, whiteboard responses)</li>
+      <li>Record student evidence responses to gauge progress</li>
+    </ul>
+    <h3>D. Skills Practice / Word Work (10–12 min)</h3>
+    <ul>
+      ${subject === 'Reading'
+        ? '<li>Blending and segmenting sounds; dictation or spelling patterns</li><li>Small‑group adjustments based on student needs</li><li>PAX reinforcement (e.g., tootles)</li>'
+        : '<li>Problem sets using manipulatives; fact fluency games</li><li>Small‑group adjustments to differentiate for skill levels</li><li>PAX reinforcement for on‑task math discussion</li>'}
+    </ul>
+    <h3>E. Partner Practice (5–8 min)</h3>
+    <ul>
+      <li>Students engage in purposeful talk tasks</li>
+      <li>${subject === 'Reading' ? 'Rereading, retelling or comprehension tasks' : 'Pair‑problem solving and explanation'}</li>
+      <li>Conduct GBG mini‑round #2 to maintain focus</li>
+    </ul>
+    <h3>F. Independent Practice / Stations (8–12 min)</h3>
+    <p>Set up stations with tasks aligned to the lesson objective:</p>
+    <ul>
+      ${subject === 'Reading'
+        ? '<li>Station 1: Decodable practice using Amplify games</li><li>Station 2: Vocabulary activity or graphic organizer</li><li>Station 3: Writing response to reading</li>'
+        : '<li>Station 1: Problem solving with manipulatives</li><li>Station 2: Math games (e.g., number bonds, math facts)</li><li>Station 3: Application problems using Bluebonnet digital tools</li>'}
+      <li>Teacher small‑group: Provide guided instruction and feedback to targeted learners</li>
+    </ul>
+    <h3>G. Closure & Exit Ticket (5 min)</h3>
+    <ul>
+      <li>Review the learning goal and success criteria</li>
+      <li>Ask students to reflect on how they met the goal; incorporate FSGPT</li>
+      <li>Administer exit ticket aligned to the objective</li>
+      <li>Celebrate with PAX tootles or quick recognition</li>
+    </ul>
+  `;
+
+  // Section 8: Differentiation
+  const differentiationSection = `
+    <h2>Section 8 — Differentiation</h2>
+    <table style="width:100%; border-collapse: collapse;">
+      <tr><th style="text-align:left; width:30%;">Student Group</th><th style="text-align:left;">Supports Planned</th></tr>
+      <tr><td>Struggling Learners</td><td>Provide concrete supports (e.g., manipulatives, additional phonics practice), scaffolded questioning, and more frequent check‑ins.</td></tr>
+      <tr><td>On‑Level Learners</td><td>Offer guided practice with gradual release, peer collaboration, and feedback opportunities.</td></tr>
+      <tr><td>Advanced Learners</td><td>Challenge with extension tasks, open‑ended problems or enrichment texts, and opportunities to teach peers.</td></tr>
+      <tr><td>Students Needing Behavior Support</td><td>Use PAX kernels and clear expectations, positive recognition, and structured choices to encourage engagement.</td></tr>
+    </table>
+  `;
+
+  // Section 9: Teacher Reflection
+  const reflectionSection = `
+    <h2>Section 9 — Teacher Reflection (Distinguished Requirement)</h2>
+    <p>After the lesson, reflect on the following prompts. Document your responses in the space provided:</p>
+    <ul>
+      <li>What evidence showed mastery?</li>
+      <li>What misunderstandings appeared?</li>
+      <li>How will I adjust instruction tomorrow?</li>
+      <li>How did PAX & Fundamental Five improve engagement?</li>
+    </ul>
+    <p>Notes: ________________________________________________</p>
+  `;
+
+  // Section 10: Administrator Look‑Fors
+  const adminSection = `
+    <h2>Section 10 — Administrator Look‑Fors (Distinguished Alignment)</h2>
+    <p>This lesson is designed to produce evidence in:</p>
+    <ul>
+      <li><strong>Domain 1 (Planning)</strong>: alignment to TEKS/standards, intentional strategies, differentiation for varied learners.</li>
+      <li><strong>Domain 2 (Instruction)</strong>: student engagement, effective questioning, checks for understanding, student thinking and discourse.</li>
+      <li><strong>Domain 3 (Classroom Culture)</strong>: PAX routines and kernels, respectful interactions, classroom management, joy in learning.</li>
+    </ul>
+  `;
+
+  // Lesson Internalization Guide (new section for teacher to fill in)
+  const internalizationGuide = `
+    <h2>Lesson Internalization Guide</h2>
+    <p>Prior to teaching, use this guide to internalize the lesson:</p>
+    <ul>
+      <li><strong>Key Concepts & Vocabulary:</strong> Identify essential ideas and words students must understand.</li>
+      <li><strong>Anticipated Misconceptions:</strong> What errors or misunderstandings might occur? Plan strategies to address them.</li>
+      <li><strong>Differentiation & Scaffolds:</strong> How will you adjust for struggling and advanced learners? What supports will you provide?</li>
+      <li><strong>Cross‑Curricular Connections:</strong> How does this lesson connect to other subjects or real‑world experiences?</li>
+      <li><strong>Fundamental Five Strategies:</strong> Plan for framing the lesson, positioning in the power zone, frequent purposeful talk, recognition and reinforcement, and critical writing.</li>
+      <li><strong>PAX Integration:</strong> How will you use PAX GBG rounds and kernels to support a positive culture?</li>
+      <li><strong>Assessment & Evidence:</strong> What specific evidence will show that students met the success criteria?</li>
+    </ul>
+    <p><em>Use these prompts to jot down notes and ensure you are fully prepared for high‑quality instruction.</em></p>
+  `;
+
+  // Compose full plan
+  const fullPlan = `
+    <h2>Overview</h2>
+    <p><strong>Grade:</strong> ${grade} | <strong>Subject:</strong> ${subject} | <strong>Program:</strong> ${program} | <strong>Unit/Lesson:</strong> ${unitLessonDisplay || '-'}${standardDisplay ? ` | <strong>Standard/Concept:</strong> ${standardDisplay}` : ''}</p>
+    ${infoSection}
+    ${objSection}
+    ${assessmentSection}
+    ${materialsSection}
+    ${cultureSection}
+    ${frameSection}
+    ${proceduresSection}
+    ${differentiationSection}
+    ${reflectionSection}
+    ${adminSection}
+    ${internalizationGuide}
+  `;
+  return fullPlan;
 }
 
 /**
