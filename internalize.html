@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson Plan Internalization</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f7fa;
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+    }
+    header {
+      background-color: #20407e;
+      color: #fff;
+      padding: 1rem 2rem;
+      text-align: center;
+    }
+    main {
+      max-width: 1000px;
+      margin: 2rem auto;
+      background-color: #fff;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    #plan-output {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background-color: #fafbfd;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      overflow:auto;
+      max-height: 400px;
+    }
+    #internalization-guide {
+      margin-top: 2rem;
+    }
+    button {
+      background-color: #20407e;
+      color: #fff;
+      border: none;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-right: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    button:hover {
+      background-color: #162d59;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Lesson Plan & Internalization</h1>
+    <p>Use this page to edit your lesson plan and review internalization guidelines side by side.</p>
+  </header>
+  <main>
+    <div id="plan-output">Loading plan...</div>
+    <div id="plan-actions" style="margin-bottom:1rem;">
+      <button id="print-btn">Print/Save Plan</button>
+      <button id="edit-btn" style="background-color:#28a745;">Edit Plan</button>
+      <button id="add-link-btn" style="background-color:#6f42c1;">Add Link</button>
+      <button id="submit-btn" style="background-color:#d6336c;">Submit Plan</button>
+    </div>
+    <div id="internalization-guide">
+      <h2>Lesson Internalization Guide</h2>
+      <div id="internalization-content"></div>
+    </div>
+  </main>
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Retrieve the plan saved for internalization
+    const stored = localStorage.getItem('currentInternalizationPlan');
+    const data = stored ? JSON.parse(stored) : null;
+    const planOutput = document.getElementById('plan-output');
+    const editBtn = document.getElementById('edit-btn');
+    const addLinkBtn = document.getElementById('add-link-btn');
+    const submitBtn = document.getElementById('submit-btn');
+    const printBtn = document.getElementById('print-btn');
+    const internalizationContent = document.getElementById('internalization-content');
+    if (!data) {
+      planOutput.innerHTML = '<p>No lesson plan available. Please generate a plan and click “Internalize (New Tab)” first.</p>';
+      return;
+    }
+    // Populate plan
+    planOutput.innerHTML = data.html;
+    planOutput.setAttribute('contenteditable', 'false');
+    // Show guidelines based on subject
+    function showInternalizationGuide(subject) {
+      const skillsInternalization = [
+        'Review the Primary Focus Objective(s) and identify how they build toward student success with grade‑level requirements.',
+        'Complete the lesson’s formative assessments: record which foundational skills students must demonstrate on the activity page, and note sound/spelling correspondences from the Student Reader【985786019224508†L2-L14】.',
+        'Analyze the Check for Understanding and list the foundational skills students need to succeed.',
+        'Examine the Lesson at a Glance: determine the intended learning of each segment (e.g., phonics, phonemic awareness) and how each sets students up for the CFU or formative assessment【985786019224508†L15-L21】.',
+        'Review each lesson segment and reflect on included engagement strategies and required materials【985786019224508†L23-L25】.',
+        'Plan additional checks for understanding for segments without a built‑in CFU; decide what counts as acceptable performance【985786019224508†L26-L28】.',
+        'Consider flexible grouping based on mastery; plan strategic partnerships or differentiated activities for students who have already mastered the target correspondence【985786019224508†L29-L31】.',
+        'Anticipate misconceptions (e.g., articulation issues); prepare strategies to address them【985786019224508†L33-L35】.',
+        'Incorporate additional engagement techniques such as call and response, movements, or turn and talk【985786019224508†L36-L38】.',
+        'Decide where in the classroom each lesson segment will take place (e.g., carpet, small‑group table)【985786019224508†L39-L39】.'
+      ];
+      const knowledgeInternalization = [
+        'Review the Primary Focus Objectives and align them to grade‑level requirements; identify how they build toward student success【245424650996294†L2-L7】.',
+        'Complete the lesson’s formative assessment/exit pass and checks for understanding; record the literacy skills, knowledge or vocabulary students must demonstrate【245424650996294†L8-L12】.',
+        'Read each lesson segment (Introducing the Read‑Aloud, Read‑Aloud, Application) and reflect on how it prepares students for the Primary Focus Objectives, checks for understanding and formative assessment【245424650996294†L14-L19】.',
+        'Identify engagement strategies and materials needed for each segment【245424650996294†L19-L21】.',
+        'Review the read‑aloud sidebar supports/questions and prioritize which to use to help students master the objectives and assessments【245424650996294†L22-L27】.',
+        'Examine the discussion questions, select which to ask after the read‑aloud, and decide on response formats (Think‑Pair‑Share, small groups, Socratic Seminar, call and response)【245424650996294†L28-L37】.',
+        'Anticipate misconceptions and prepare strategies to address them【245424650996294†L38-L39】.',
+        'Plan additional engagement (props, artifacts, multimedia, movements) to keep students involved【245424650996294†L40-L43】.',
+        'Plan the Application segment: determine how activities will extend learning and how you will execute them【245424650996294†L44-L48】.'
+      ];
+      let html = '';
+      if (subject === 'Reading') {
+        html += '<h3>Skills Lesson Internalization (Amplify K–2)</h3><ul>' + skillsInternalization.map(item => `<li>${item}</li>`).join('') + '</ul>';
+        html += '<h3>Knowledge Lesson Internalization (Amplify K–2)</h3><ul>' + knowledgeInternalization.map(item => `<li>${item}</li>`).join('') + '</ul>';
+      } else {
+        html += '<p>Refer to the differentiation and internalization prompts provided in the lesson plan. Specific math internalization guidelines can be added here when available.</p>';
+      }
+      internalizationContent.innerHTML = html;
+    }
+    showInternalizationGuide(data.subject);
+    // Toggle editing
+    editBtn.addEventListener('click', () => {
+      const current = planOutput.getAttribute('contenteditable');
+      const enable = current !== 'true';
+      planOutput.setAttribute('contenteditable', enable ? 'true' : 'false');
+      editBtn.textContent = enable ? 'Stop Editing' : 'Edit Plan';
+      if (enable) planOutput.focus();
+    });
+    // Add hyperlink
+    addLinkBtn.addEventListener('click', () => {
+      const url = prompt('Enter the URL to hyperlink:');
+      if (!url) return;
+      const selection = window.getSelection();
+      if (!selection || selection.isCollapsed) {
+        alert('Please highlight the text you want to hyperlink before clicking Add Link.');
+        return;
+      }
+      document.execCommand('createLink', false, url);
+    });
+    // Print
+    printBtn.addEventListener('click', () => {
+      window.print();
+    });
+    // Submit plan (save to teacher and admin arrays)
+    submitBtn.addEventListener('click', () => {
+      // Use updated HTML from planOutput
+      const htmlContent = planOutput.innerHTML;
+      const planData = {
+        timestamp: new Date().toISOString(),
+        grade: data.grade,
+        subject: data.subject,
+        program: data.program,
+        unit: data.unit,
+        lesson: data.lesson,
+        standard: data.standard,
+        html: htmlContent
+      };
+      const teacherPlans = JSON.parse(localStorage.getItem('teacherPlans') || '[]');
+      const adminPlans = JSON.parse(localStorage.getItem('adminPlans') || '[]');
+      teacherPlans.push(planData);
+      adminPlans.push(planData);
+      localStorage.setItem('teacherPlans', JSON.stringify(teacherPlans));
+      localStorage.setItem('adminPlans', JSON.stringify(adminPlans));
+      alert('Lesson plan submitted successfully. It has been added to your lesson plan page and the administrator hub.');
+    });
+  });
+  </script>
+</body>
+</html>

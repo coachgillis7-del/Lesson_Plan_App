@@ -18,6 +18,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const addLinkBtn = document.getElementById('add-link-btn');
   const submitBtn = document.getElementById('submit-btn');
   const actionsDiv = document.getElementById('plan-actions');
+  const internalizeBtn = document.getElementById('internalize-btn');
+  const internalizeTabBtn = document.getElementById('internalize-tab-btn');
+  const modal = document.getElementById('internalization-modal');
+  const modalContent = document.getElementById('internalization-content');
+  const closeModalBtn = document.getElementById('close-modal-btn');
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -105,6 +110,86 @@ document.addEventListener('DOMContentLoaded', () => {
       localStorage.setItem('teacherPlans', JSON.stringify(teacherPlans));
       localStorage.setItem('adminPlans', JSON.stringify(adminPlans));
       alert('Lesson plan submitted successfully. It has been added to your lesson plan page and the administrator hub.');
+    });
+  }
+
+  // Internalization modal content using Amplify guidelines
+  const skillsInternalization = [
+    'Review the Primary Focus Objective(s) and identify how they build toward student success with grade‑level requirements.',
+    'Complete the lesson’s formative assessments: record which foundational skills students must demonstrate on the activity page, and note sound/spelling correspondences from the Student Reader【985786019224508†L2-L14】.',
+    'Analyze the Check for Understanding and list the foundational skills students need to succeed.',
+    'Examine the Lesson at a Glance: determine the intended learning of each segment (e.g., phonics, phonemic awareness) and how each sets students up for the CFU or formative assessment【985786019224508†L15-L21】.',
+    'Review each lesson segment and reflect on included engagement strategies and required materials【985786019224508†L23-L25】.',
+    'Plan additional checks for understanding for segments without a built‑in CFU; decide what counts as acceptable performance【985786019224508†L26-L28】.',
+    'Consider flexible grouping based on mastery; plan strategic partnerships or differentiated activities for students who have already mastered the target correspondence【985786019224508†L29-L31】.',
+    'Anticipate misconceptions (e.g., articulation issues); prepare strategies to address them【985786019224508†L33-L35】.',
+    'Incorporate additional engagement techniques such as call and response, movements, or turn and talk【985786019224508†L36-L38】.',
+    'Decide where in the classroom each lesson segment will take place (e.g., carpet, small‑group table)【985786019224508†L39-L39】.'
+  ];
+  const knowledgeInternalization = [
+    'Review the Primary Focus Objectives and align them to grade‑level requirements; identify how they build toward student success【245424650996294†L2-L7】.',
+    'Complete the lesson’s formative assessment/exit pass and checks for understanding; record the literacy skills, knowledge or vocabulary students must demonstrate【245424650996294†L8-L12】.',
+    'Read each lesson segment (Introducing the Read‑Aloud, Read‑Aloud, Application) and reflect on how it prepares students for the Primary Focus Objectives, checks for understanding and formative assessment【245424650996294†L14-L19】.',
+    'Identify engagement strategies and materials needed for each segment【245424650996294†L19-L21】.',
+    'Review the read‑aloud sidebar supports/questions and prioritize which to use to help students master the objectives and assessments【245424650996294†L22-L27】.',
+    'Examine the discussion questions, select which to ask after the read‑aloud, and decide on response formats (Think‑Pair‑Share, small groups, Socratic Seminar, call and response)【245424650996294†L28-L37】.',
+    'Anticipate misconceptions and prepare strategies to address them【245424650996294†L38-L39】.',
+    'Plan additional engagement (props, artifacts, multimedia, movements) to keep students involved【245424650996294†L40-L43】.',
+    'Plan the Application segment: determine how activities will extend learning and how you will execute them【245424650996294†L44-L48】.'
+  ];
+
+  /**
+   * Populate the internalization modal based on subject. Reading lessons
+   * may be categorized as Skills or Knowledge. For now, we display both
+   * sets of guidelines.
+   */
+  function showInternalizationGuide(subject) {
+    let html = '';
+    if (subject === 'Reading') {
+      html += '<h3>Skills Lesson Internalization (Amplify K–2)</h3><ul>' + skillsInternalization.map(item => `<li>${item}</li>`).join('') + '</ul>';
+      html += '<h3>Knowledge Lesson Internalization (Amplify K–2)</h3><ul>' + knowledgeInternalization.map(item => `<li>${item}</li>`).join('') + '</ul>';
+    } else {
+      // For math, reuse general prompts
+      html += '<p>Refer to the differentiation and internalization prompts provided in the lesson plan. Specific math internalization guidelines can be added here when available.</p>';
+    }
+    modalContent.innerHTML = html;
+    modal.style.display = 'block';
+  }
+
+  // Event listener for Internalize Lesson button
+  if (internalizeBtn) {
+    internalizeBtn.addEventListener('click', () => {
+      const subject = form.subject.value;
+      showInternalizationGuide(subject);
+    });
+  }
+
+  // Event listener for Internalize in New Tab button
+  if (internalizeTabBtn) {
+    internalizeTabBtn.addEventListener('click', () => {
+      // Ensure a plan exists
+      if (!output.innerHTML) return;
+      // Save current plan HTML and metadata to localStorage for the internalization page
+      const planData = {
+        html: output.innerHTML,
+        subject: form.subject.value,
+        grade: form.grade.value,
+        program: form.program.value,
+        unit: form.unit.value,
+        lesson: form.lesson.value,
+        standard: form.standard.value.trim(),
+        timestamp: new Date().toISOString(),
+      };
+      localStorage.setItem('currentInternalizationPlan', JSON.stringify(planData));
+      // Open the internalization page in a new tab
+      window.open('internalize.html', '_blank');
+    });
+  }
+
+  // Close modal button
+  if (closeModalBtn) {
+    closeModalBtn.addEventListener('click', () => {
+      modal.style.display = 'none';
     });
   }
 });

@@ -131,6 +131,17 @@
       <button class="print-btn" id="edit-btn" style="background-color:#28a745;">Edit Plan</button>
       <button class="print-btn" id="add-link-btn" style="background-color:#6f42c1;">Add Link</button>
       <button class="print-btn" id="submit-btn" style="background-color:#d6336c;">Submit Plan</button>
+      <button class="print-btn" id="internalize-btn" style="background-color:#ffa500;">Internalize (Overlay)</button>
+      <button class="print-btn" id="internalize-tab-btn" style="background-color:#ffcc00;">Internalize (New Tab)</button>
+    </div>
+
+    <!-- Internalization modal overlay -->
+    <div id="internalization-modal" style="display:none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index:1000; overflow:auto;">
+      <div style="background:#fff; margin:5% auto; padding:1.5rem; width:90%; max-width:800px; border-radius:8px; position:relative;">
+        <button id="close-modal-btn" style="position:absolute; top:0.5rem; right:0.5rem; background:#d6336c; color:#fff; border:none; border-radius:4px; padding:0.25rem 0.5rem; cursor:pointer;">X</button>
+        <h2>Lesson Internalization Guide</h2>
+        <div id="internalization-content"></div>
+      </div>
     </div>
   </main>
   <script src="script.js"></script>
